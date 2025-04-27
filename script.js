@@ -66,7 +66,6 @@ const createSection = ({ logo, name, description, isActive }) => {
   secondDiv.innerHTML = `<button class="extension-card-remove ${
     theme === "light" ? "extension-card-remove-light" : ""
   }" id="${name}-remove">Remove</button>`;
-  section.appendChild(secondDiv);
   const label = createSlider(isActive);
   secondDiv.appendChild(label);
   section.appendChild(secondDiv);
@@ -99,17 +98,9 @@ window.addEventListener("DOMContentLoaded", () => {
     });
 });
 
-const removeSelectedClass = (btnList, selectedBtn) => {
-  btnList.forEach((btn) => {
-    if (btn !== selectedBtn) {
-      btn.classList.remove("filter-selected-btn");
-    }
-  });
-};
-
 const filterBtnClick = (btn) => {
   const btnList = document.querySelectorAll(".filter-section-btns button");
-  removeSelectedClass(btnList, btn);
+  btnList.forEach((button) => button.classList.remove("filter-selected-btn"));
   if (btn.textContent === "Active") {
     extensionListFiltered = extensionList.filter(
       (extensionItem) => extensionItem.isActive
@@ -119,7 +110,7 @@ const filterBtnClick = (btn) => {
       (extensionItem) => !extensionItem.isActive
     );
   } else {
-    extensionListFiltered = extensionList;
+    extensionListFiltered = [...extensionList];
   }
   updateExtensionList(extensionListFiltered);
   btn.classList.add("filter-selected-btn");
