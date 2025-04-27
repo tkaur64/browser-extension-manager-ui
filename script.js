@@ -1,4 +1,5 @@
 let extensionList = [];
+let extensionListFiltered = [];
 
 const createSlider = (isActive) => {
   const label = document.createElement("label");
@@ -28,7 +29,7 @@ const createSection = ({ logo, name, description, isActive }) => {
   section.classList.add("extension-card");
   const secondDiv = document.createElement("div");
   secondDiv.classList.add("extension-card-action");
-  secondDiv.innerHTML = '<button class="extension-card-remove">Remove</button>';
+  secondDiv.innerHTML = `<button class="extension-card-remove" id="${name}-remove">Remove</button>`;
   section.appendChild(secondDiv);
   const label = createSlider(isActive);
   secondDiv.appendChild(label);
@@ -53,7 +54,9 @@ window.addEventListener("DOMContentLoaded", () => {
     })
     .then((data) => {
       extensionList = data;
+      extensionListFiltered = data;
       updateExtensionList(data);
+      addClickEventListener();
     })
     .catch((e) => {
       console.error(e);
@@ -72,21 +75,34 @@ const filterBtnClick = (btn) => {
   const btnList = document.querySelectorAll(".filter-section-btns button");
   removeSelectedClass(btnList, btn);
   if (btn.textContent === "Active") {
-    const filteredList = extensionList.filter(
+    extensionListFiltered = extensionListFiltered.filter(
       (extensionItem) => extensionItem.isActive
     );
-    updateExtensionList(filteredList);
   } else if (btn.textContent === "Inactive") {
-    const filteredList = extensionList.filter(
+    extensionListFiltered = extensionList.filter(
       (extensionItem) => !extensionItem.isActive
     );
-    updateExtensionList(filteredList);
   } else {
-    updateExtensionList(extensionList);
+    extensionListFiltered = extensionList;
   }
+  updateExtensionList(extensionListFiltered);
+  addClickEventListener();
   btn.classList.add("filter-selected-btn");
 };
 
 document.querySelectorAll(".filter-section-btns button").forEach((btn) => {
   btn.addEventListener("click", () => filterBtnClick(btn));
 });
+
+const addClickEventListener = () => {
+  document.querySelectorAll(".extension-card-action button").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const elementSelected = btn.id.split("-")[0];
+      extensionListFiltered = extensionListFiltered.filter(
+        (item) => item.name !== elementSelected
+      );
+      updateExtensionList(extensionListFiltered);
+      addClickEventListener();
+    });
+  });
+};
