@@ -1,5 +1,36 @@
 let extensionList = [];
 let extensionListFiltered = [];
+let theme = "dark";
+
+const updateTheme = () => {
+  const imgTheme = document.querySelector(".theme-container img");
+  if (theme === "dark") {
+    imgTheme.src = "./assets/images/icon-sun.svg";
+    document.querySelectorAll("header svg path")[1].style.fill = "#fff";
+  } else {
+    imgTheme.src = "./assets/images/icon-moon.svg";
+    document.querySelectorAll("header svg path")[1].style.fill = "#09153e";
+  }
+  document.getElementsByTagName("body")[0].classList.toggle("light");
+  document
+    .getElementsByClassName("theme-container")[0]
+    .classList.toggle("theme-container-light");
+  document.getElementsByTagName("header")[0].classList.toggle("header-light");
+  document
+    .getElementsByClassName("filter-section")[0]
+    .classList.toggle("filter-section-light");
+  document.querySelectorAll(".extension-card").forEach((element) => {
+    element.classList.toggle("extension-card-light");
+  });
+  document
+    .querySelectorAll(".extension-card-img-text-container")
+    .forEach((element) => {
+      element.classList.toggle("extension-card-img-text-container-light");
+    });
+  document.querySelectorAll(".extension-card-remove").forEach((element) => {
+    element.classList.toggle("extension-card-remove-light");
+  });
+};
 
 const createSlider = (isActive) => {
   const label = document.createElement("label");
@@ -17,7 +48,9 @@ const createSlider = (isActive) => {
 
 const createSection = ({ logo, name, description, isActive }) => {
   const section = document.createElement("section");
-  section.innerHTML = `<div class="extension-card-img-text-container">
+  section.innerHTML = `<div class="extension-card-img-text-container ${
+    theme === "light" ? "extension-card-img-text-container-light" : ""
+  }">
     <img src="${logo}" />
     <div>
       <h3>${name}</h3>
@@ -26,10 +59,13 @@ const createSection = ({ logo, name, description, isActive }) => {
       </p>
     </div>
   </div>`;
-  section.classList.add("extension-card");
+  section.classList.add(`extension-card`);
+  section.classList.add(`${theme === "light" ? "extension-card-light" : null}`);
   const secondDiv = document.createElement("div");
   secondDiv.classList.add("extension-card-action");
-  secondDiv.innerHTML = `<button class="extension-card-remove" id="${name}-remove">Remove</button>`;
+  secondDiv.innerHTML = `<button class="extension-card-remove ${
+    theme === "light" ? "extension-card-remove-light" : ""
+  }" id="${name}-remove">Remove</button>`;
   section.appendChild(secondDiv);
   const label = createSlider(isActive);
   secondDiv.appendChild(label);
@@ -45,6 +81,7 @@ const updateExtensionList = (el) => {
   el.forEach((element) => {
     mainElement.appendChild(createSection(element));
   });
+  addClickEventListener();
 };
 
 window.addEventListener("DOMContentLoaded", () => {
@@ -56,7 +93,6 @@ window.addEventListener("DOMContentLoaded", () => {
       extensionList = data;
       extensionListFiltered = data;
       updateExtensionList(data);
-      addClickEventListener();
     })
     .catch((e) => {
       console.error(e);
@@ -86,7 +122,6 @@ const filterBtnClick = (btn) => {
     extensionListFiltered = extensionList;
   }
   updateExtensionList(extensionListFiltered);
-  addClickEventListener();
   btn.classList.add("filter-selected-btn");
 };
 
@@ -102,7 +137,13 @@ const addClickEventListener = () => {
         (item) => item.name !== elementSelected
       );
       updateExtensionList(extensionListFiltered);
-      addClickEventListener();
     });
   });
 };
+
+document
+  .getElementsByClassName("theme-container")[0]
+  .addEventListener("click", () => {
+    theme = theme === "dark" ? "light" : "dark";
+    updateTheme();
+  });
