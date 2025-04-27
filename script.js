@@ -111,7 +111,7 @@ const filterBtnClick = (btn) => {
   const btnList = document.querySelectorAll(".filter-section-btns button");
   removeSelectedClass(btnList, btn);
   if (btn.textContent === "Active") {
-    extensionListFiltered = extensionListFiltered.filter(
+    extensionListFiltered = extensionList.filter(
       (extensionItem) => extensionItem.isActive
     );
   } else if (btn.textContent === "Inactive") {
