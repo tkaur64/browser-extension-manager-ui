@@ -32,12 +32,31 @@ const updateTheme = () => {
   });
 };
 
-const createSlider = (isActive) => {
+const changeIsActive = (name) => {
+  extensionListFiltered = extensionListFiltered.map((item) => {
+    if (item.name === name) {
+      return { ...item, isActive: !item.isActive };
+    } else {
+      return item;
+    }
+  });
+  extensionList = extensionList.map((item) => {
+    if (item.name === name) {
+      return { ...item, isActive: !item.isActive };
+    } else {
+      return item;
+    }
+  });
+  updateExtensionList(extensionListFiltered);
+};
+
+const createSlider = (name, isActive) => {
   const label = document.createElement("label");
   label.classList.add("switch");
   const inputElement = document.createElement("input");
   inputElement.type = "checkbox";
   inputElement.checked = isActive;
+  inputElement.addEventListener("change", () => changeIsActive(name));
   label.appendChild(inputElement);
   const spanElement = document.createElement("span");
   spanElement.classList.add("slider");
@@ -66,7 +85,7 @@ const createSection = ({ logo, name, description, isActive }) => {
   secondDiv.innerHTML = `<button class="extension-card-remove ${
     theme === "light" ? "extension-card-remove-light" : ""
   }" id="${name}-remove">Remove</button>`;
-  const label = createSlider(isActive);
+  const label = createSlider(name, isActive);
   secondDiv.appendChild(label);
   section.appendChild(secondDiv);
   return section;

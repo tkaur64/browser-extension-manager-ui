@@ -86,6 +86,7 @@ header {
   grid-template-columns: repeat(3, 1fr);
   gap: 1.2rem;
   flex-grow: 0.85;
+  grid-auto-rows: max-content;
 }
 
 .extension-card {
@@ -95,6 +96,7 @@ header {
   padding: 2rem;
   display: flex;
   flex-direction: column;
+  gap: 2rem;
 }
 
 .extension-card-img-text-container {
